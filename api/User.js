@@ -28,7 +28,7 @@ router.post('/signup', (req, res) => {
             status: 'FAILED',
             message: 'Invalid email'
         })
-    } else if (phoneNumber.length > 10 || phoneNumber == null) {
+    } else if (phoneNumber == "") {
         res.json({
             status: 'FAILED',
             message: 'Invalid Phone Number'
