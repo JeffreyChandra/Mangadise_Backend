@@ -7,13 +7,13 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
 router.post('/signup', (req, res) => {
-    let { name, email, password, dateOfBirth } = req.body;
+    let { name, email, password, phoneNumber } = req.body;
     name = name.trim();
     email = email.trim();
     password = password.trim();
     dateOfBirth = dateOfBirth.trim();
 
-    if (name == "" || email == "" || password == "" || dateOfBirth == "") {
+    if (name == "" || email == "" || password == "" || phoneNumber == "") {
         res.json({
             status: 'FAILED',
             message: 'Empty input fields!'
@@ -28,10 +28,10 @@ router.post('/signup', (req, res) => {
             status: 'FAILED',
             message: 'Invalid email'
         })
-    } else if (!new Date(dateOfBirth).getTime()) {
+    } else if (phoneNumber.length != 10 || !/^\d+$/.test(phoneNumber) || phoneNumber == null) {
         res.json({
             status: 'FAILED',
-            message: 'Invalid date of birth'
+            message: 'Invalid Phone Number'
         })
     } else if (password.length < 8) {
         res.json({
@@ -52,7 +52,7 @@ router.post('/signup', (req, res) => {
                         name,
                         email,
                         password: hasedPassword,
-                        dateOfBirth
+                        phoneNumber
                     });
                     newUser.save().then(result => {
                         res.json({
@@ -134,6 +134,24 @@ router.post('/signin', (req, res) => {
             })
         })
     }
+});
+
+router.get('/getAllUsers', (req, res) => { 
+
+    User.find({}).then(result => {
+        res.json({
+            status: 'SUCCESS',
+            message: 'Users fetched successfully',
+            data: result
+        })
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: 'FAILED',
+            message: 'An error occured while fetching users'
+        })
+    })
+
 });
 
 module.exports = router;
