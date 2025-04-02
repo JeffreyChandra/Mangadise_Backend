@@ -5,6 +5,14 @@ router.post("/addKomik", async (req, res) => {
     try {
         const { title, author, coverUrl, synopsis, rate } = req.body;
 
+        if (title === "" || author === "" || coverUrl === "" || synopsis === "" || rate === "") {
+            return res.status(400).json({ status: "FAILED", message: "Fields cant be empty" });
+        }
+
+        if (Komik.find({title})) {
+            return res.status(400).json({ status: "FAILED", message: "Komik already exists" });
+        }
+
         if (!coverUrl) {
             return res.status(400).json({ status: "FAILED", message: "Cover URL is required" });
         }
@@ -69,5 +77,11 @@ router.get("/searchKomik/:title", (req, res) => {
             });
         });
 });
+
+router.delete("/deleteKomik/:title", (req, res) => {
+    const { title } = req.params;
+
+    Komik.findOneAndDelete ({ title });
+})
 
 module.exports = router;
