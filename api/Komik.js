@@ -11,7 +11,7 @@ router.post("/addKomik", async (req, res) => {
             return res.status(400).json({ status: "FAILED", message: "Fields cant be empty" });
         }
 
-        if (Komik.find({title})) {
+        if (Komik.findOne({title})) {
             return res.status(400).json({ status: "FAILED", message: "Komik already exists" });
         }
 
