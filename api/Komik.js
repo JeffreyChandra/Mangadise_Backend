@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Komik = require('../models/komik'); // Fixed path (matching the actual file name casing)
-
+const Komik = require('../models/komik'); 
 router.post("/addKomik", async (req, res) => {
     try {
         const { title, author, coverUrl, synopsis, rate } = req.body;
