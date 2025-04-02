@@ -52,7 +52,7 @@ router.post('/signup', (req, res) => {
                         password: hasedPassword,
                         phoneNumber,
                         point,
-                        create_at,
+                        create_at : new Date(),
                     });
                     newUser.save().then(result => {
                         res.json({

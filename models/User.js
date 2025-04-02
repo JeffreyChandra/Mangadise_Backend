@@ -7,8 +7,8 @@ const userSchema = new Schema({
     email: String,
     password: String,
     phoneNumber: String,
-    point : { type: Number, default: 0 }, // Default point = 0 saat user baru dibuat
-    created_at : { type: Date, default: Date.now }
+    point : { type: Number, default: 0 },
+    created_at : { type: Date}
 
 });
 
