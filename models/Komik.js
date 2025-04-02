@@ -11,6 +11,6 @@ const komikSchema = new Schema({
     create_at : {type : Date, default: Date.now},
 });
 
-const komik = mongoose.model('Komik', komikSchema);
+const Komik = mongoose.model('Komik', komikSchema);
 
-module.exports = komik;
+module.exports = Komik;
