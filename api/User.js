@@ -4,8 +4,6 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
-const point = 0;
-
 router.post('/signup', (req, res) => {
     let { name, email, password, phoneNumber } = req.body;
     name = name.trim();
@@ -54,7 +52,7 @@ router.post('/signup', (req, res) => {
                         password: hasedPassword,
                         phoneNumber,
                         point,
-                        create_at: Date.now()
+                        create_at : new Date(),
                     });
                     newUser.save().then(result => {
                         res.json({
