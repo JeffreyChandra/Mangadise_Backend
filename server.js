@@ -4,11 +4,13 @@ const app = require('express')();
 const port = process.env.PORT || 3000;
 
 const UserRouter = require('./api/User');
+const KomikRouter = require('./api/Komik');
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 app.use('/user', UserRouter)
+app.use('/komik', KomikRouter)
 
 
 app.listen(port, () => {

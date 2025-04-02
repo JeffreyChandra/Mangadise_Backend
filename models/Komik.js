@@ -8,7 +8,7 @@ const komikSchema = new Schema({
     cover : String,
     synopsis : String,
     rate : Number,
-    create_at : Date
+    create_at : {type : Date, default: Date.now},
 });
 
 const Komik = mongoose.model('Komik', komikSchema);

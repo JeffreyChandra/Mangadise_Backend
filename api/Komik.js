@@ -1,52 +1,74 @@
-
 const express = require('express');
 const router = express.Router();
-const Komik = require('./models/Komik');
+const Komik = require('../models/komik'); // Fixed path (matching the actual file name casing)
 
+router.post("/addKomik", async (req, res) => {
+    try {
+        const { title, author, coverUrl, synopsis, rate } = req.body;
 
-router.post ("/addKomik", (req, res) => {
+        if (!coverUrl) {
+            return res.status(400).json({ status: "FAILED", message: "Cover URL is required" });
+        }
 
-    const { title, author, cover, synopsis, rate } = req.body;
-    const newKomik = new Komik ({
-        title,
-        author,
-        cover,
-        synopsis,
-        rate,
-        create_at: Date.now(),
-    })
+        const newKomik = new Komik({
+            title,
+            author,
+            cover: coverUrl, 
+            synopsis,
+            rate,
+        });
 
-})
+        await newKomik.save();
+        res.json({ status: "SUCCESS", message: "Komik added", data: newKomik });
 
-router.get ("/searchKomik", (req,res) => {
-    Komik.find({}).then(result => {
-        res.json({
-            status: 'SUCCESS',
-            message: 'Komik found',
-            data: result,
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ status: "FAILED", message: "Server error" });
+    }
+});
+
+router.get("/searchKomik", (req, res) => {
+    Komik.find({})
+        .then(result => {
+            res.json({
+                status: 'SUCCESS',
+                message: 'Komik found',
+                data: result,
+            });
         })
-    }).catch(err => {
-        res.json({
-            status: 'FAILED',
-            message: 'Komik not found',
-        })
-    })
-})
+        .catch(err => {
+            console.error(err);
+            res.json({
+                status: 'FAILED',
+                message: 'Komik not found',
+            });
+        });
+});
 
-router.get ("/searchKomik/:id", (req,res) => {
+router.get("/searchKomik/:title", (req, res) => {
+    const { title } = req.params;
 
-    const id = req.params.id;
-    Komik.findById(id).then(result => {
-        res.json({
-            status: 'SUCCESS',
-            message: 'Komik found',
-            data: result,
+    Komik.findOne({title})
+        .then(result => {
+            if (!result) {
+                return res.json({
+                    status: 'FAILED',
+                    message: 'Komik not found',
+                });
+            }
+            res.json({
+                status: 'SUCCESS',
+                message: 'Komik found',
+                data: result,
+            });
         })
-    }).catch(err => {
-        res.json({
-            status: 'FAILED',
-            message: 'Komik not found',
-        })
-    })
+        .catch(err => {
+            console.error(err);
+            res.json({
+                status: 'FAILED',
+                message: 'Invalid ID format or Komik not found',
+            });
+        });
+});
 
-})
+module.exports = router;
