@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Komik = require('../models/komik'); 
+const Komik = require('../models/Komik'); 
 router.post("/addKomik", async (req, res) => {
     try {
         const { title, author, coverUrl, synopsis, rate } = req.body;
