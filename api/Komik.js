@@ -3,15 +3,19 @@ const db = require('../config/db');
 const router = express.Router();
 const Komik = require('../models/Comic'); 
 const Comic = require('../models/Comic');
+
+
 router.post("/addKomik", async (req, res) => {
     try {
+        console.log(Comic)
         const { title, author, coverUrl, synopsis, rate } = req.body;
 
         if (title === "" || author === "" || coverUrl === "" || synopsis === "" || rate === "") {
             return res.status(400).json({ status: "FAILED", message: "Fields cant be empty" });
         }
 
-        if (Komik.find({ title }) == title) {
+        const existingKomik = await Komik.findOne({ title });
+        if (existingKomik) {
             return res.status(400).json({ status: "FAILED", message: "Komik already exists" });
         }
 
@@ -28,7 +32,7 @@ router.post("/addKomik", async (req, res) => {
         });
 
         await newKomik.save();
-        res.json({ status: "SUCCESS", message: "Komik added", data: newKomik });
+        res.json({ status: "SUCCESS", message: `Komik added ${Comic}`, data: newKomik });
 
     } catch (err) {
         console.error(err);
@@ -114,5 +118,31 @@ router.delete("/deleteKomik/:title", async (req, res) => {
 });
 
 
+router.put("/updateKomik/:_id", async (req, res) => {
+    try {
+        const { _id } = req.params;
+        const { title, author, coverUrl, synopsis, rate } = req.body;
+
+        if (!title || !author || !coverUrl || !synopsis || !rate) {
+            return res.status(400).json({ status: "FAILED", message: "Fields cant be empty" });
+        }
+
+        const updatedKomik = await Komik.findByIdAndUpdate(
+            _id,
+            { title, author, cover: coverUrl, synopsis, rate },
+            { new: true }
+        );
+
+        if (!updatedKomik) {
+            return res.status(404).json({ status: "FAILED", message: "Komik not found" });
+        }
+
+        res.json({ status: "SUCCESS", message: "Komik updated successfully", data: updatedKomik });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: "FAILED", message: "Server error" });
+    }
+})
 
 module.exports = router;
