@@ -8,7 +8,7 @@ const userSchema = new Schema({
     password: String,
     phoneNumber: String,
     point : { type: Number, default: 0 },
-    created_at : Date
+    created_at : Date,
 
 });
 
