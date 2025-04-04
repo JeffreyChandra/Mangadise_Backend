@@ -54,8 +54,8 @@ const storage = new Storage({
   const bucket = storage.bucket('komik-storage');
   
   router.get('/chapter-images', async (req, res) => {
-    const { komik_id, chapter } = req.query;
-    const prefix = `${komik_id}/chapter/${chapter}/`;
+    const { komikName, chapter } = req.query;
+    const prefix = `${komikName}/chapter/${chapter}/`;
   
     try {
       const [files] = await bucket.getFiles({ prefix });
