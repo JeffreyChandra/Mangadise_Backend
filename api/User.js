@@ -68,7 +68,7 @@ router.post('/signup', (req, res) => {
                     })
 
                 }).catch(err => {
-                    console.log(err);
+                    console.log(err);  
                     res.json({
                         status: 'FAILED',
                         message: 'An error occured while hashing password'

@@ -61,9 +61,9 @@ router.get("/searchKomik", (req, res) => {
 router.get("/searchKomik/:_id", (req, res) => {
     const { _id } = req.params;
 
-    db.Types.ObjectId.isValid(_id) // Check if the ID is valid
-        ? null // If valid, do nothing
-        : res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' }); // If invalid, return error
+    db.Types.ObjectId.isValid(_id) 
+        ? null
+        : res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' });
 
     Comic.find({_id})
         .then(result => {
@@ -90,7 +90,7 @@ router.get("/searchKomik/:_id", (req, res) => {
 
 router.delete("/deleteKomik/:title", async (req, res) => {
     try {
-        const title = decodeURIComponent(req.params.title); // Fix encoding issue
+        const title = decodeURIComponent(req.params.title);
         
         const deletedKomik = await Komik.findOneAndDelete({ title });
 
