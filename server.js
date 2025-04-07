@@ -6,6 +6,7 @@ const port = process.env.PORT || 3000;
 const UserRouter = require('./api/User');
 const KomikRouter = require('./api/Komik');
 const ChapterRouter = require('./api/Chapter');
+const FavoriteRouter = require('./api/Favorite');
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -13,6 +14,7 @@ app.use(bodyParser.json());
 app.use('/user', UserRouter)
 app.use('/komik', KomikRouter)
 app.use('/chapter', ChapterRouter)
+app.use("/favorite", FavoriteRouter)
 
 
 app.listen(port, () => {

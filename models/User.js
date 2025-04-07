@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Favorite = require('./Favorite');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -8,6 +9,7 @@ const userSchema = new Schema({
     password: String,
     phoneNumber: String,
     point : { type: Number, default: 0 },
+    // favorites: [{ type: Schema.Types.ObjectId, ref: 'Komik' }],
     created_at: { type: Date, default: Date.now }
 
 });

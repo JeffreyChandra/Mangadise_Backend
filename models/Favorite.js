@@ -1,16 +1,15 @@
 const mongoose = require('mongoose');
+const { create } = require('./Chapter');
 const Schema = mongoose.Schema;
 
 const FavoriteSchema = new Schema({
 
-    name: String,
-    email: String,
-    password: String,
-    phoneNumber: String,
-    create_at : Date,
+    komik_id : String,
+    user_id : String,
+    create_at : {type : Date, default: Date.now},
 
 });
 
-const Favorite = mongoose.model('Favorite', favoriteSchema);
+const Favorite = mongoose.model('Favorite', FavoriteSchema);
 
 module.exports = Favorite;
