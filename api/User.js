@@ -153,4 +153,28 @@ router.get('/getAllUsers', (req, res) => {
 
 });
 
+router.get("/getUser/:_id", (req, res) => {
+    const { _id } = req.params;
+    if (_id == "") {
+        res.json({
+            status: 'FAILED',
+            message: 'Empty input fields!'
+        })
+    } else {
+        User.find({ _id }).then(result => {
+            res.json({
+                status: 'SUCCESS',
+                message: 'User fetched successfully',
+                data: result
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: 'FAILED',
+                message: 'An error occured while fetching user'
+            })
+        })
+    }
+}   )
+
 module.exports = router;

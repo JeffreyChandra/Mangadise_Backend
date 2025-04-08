@@ -62,4 +62,28 @@ router.get('/searchComment/:komik_id', (req, res) => {
         });
 })
 
+router.put('/editComment/:_id', (req, res) => {
+    const { _id } = req.params;
+
+    db.Types.ObjectId.isValid(_id)
+        ? null
+        : res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' });
+
+    Comment.findByIdAndUpdate(_id, { $set: req.body }, { new: true })
+        .then(result => {
+            res.json({
+                status: 'SUCCESS',
+                message: 'Comment updated',
+                data: result,
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            res.json({
+                status: 'FAILED',
+                message: 'Failed to update comment',
+            });
+        });
+})
+
 module.exports = router;
