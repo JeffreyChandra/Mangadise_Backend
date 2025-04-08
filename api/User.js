@@ -165,7 +165,7 @@ router.get("/getUser/:_id", (req, res) => {
             res.json({
                 status: 'SUCCESS',
                 message: 'User fetched successfully',
-                data: result
+                data: [{point: result[0].point, name: result[0].name, email: result[0].email, phoneNumber: result[0].phoneNumber}] 
             })
         }).catch(err => {
             console.log(err);
