@@ -33,8 +33,24 @@ router.post('/addGenre', async (req, res) => {
 
 })
 
-router.get('/searchGenre', (req, res) => {})
-
+router.get('/searchGenre/:genre', (req, res) => {
+    const { genre } = req.params;
+    Genre.find({ genre })
+        .then(result => {
+            res.json({
+                status: 'SUCCESS',
+                message: 'Genre found',
+                data: result,
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            res.json({
+                status: 'FAILED',
+                message: 'Genre not found',
+            });
+        });
+})
 
 
 

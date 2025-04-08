@@ -1,0 +1,65 @@
+const express = require('express');
+const Comment = require('../models/Comment');
+const db = require('../config/db');
+const router = express.Router();
+
+router.post('/addComment', async (req, res) => {
+    const { user_id, komik_id, comment } = req.body;
+
+    if (!user_id || !komik_id || !comment) {
+        return res.status(400).json({ status: 'FAILED', message: 'Fields cant be empty' });
+    }
+
+    db.Types.ObjectId.isValid(user_id) && db.Types.ObjectId.isValid(komik_id)
+        ? null
+        : res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' });
+
+    const newComment = new Comment({
+        user_id,
+        komik_id,
+        comment,
+    });
+
+    await newComment.save()
+        .then(result => {
+            res.json({
+                status: 'SUCCESS',
+                message: 'Comment added',
+                data: result,
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            res.json({
+                status: 'FAILED',
+                message: 'Failed to add comment',
+            });
+        });
+});
+
+
+router.get('/searchComment/:komik_id', (req, res) => {
+    const { komik_id } = req.params;
+
+    db.Types.ObjectId.isValid(komik_id)
+        ? null
+        : res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' });
+
+    Comment.find({ komik_id })
+        .then(result => {
+            res.json({
+                status: 'SUCCESS',
+                message: 'Comment found',
+                data: result,
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            res.json({
+                status: 'FAILED',
+                message: 'Comment not found',
+            });
+        });
+})
+
+module.exports = router;
