@@ -45,6 +45,25 @@ router.get("/searchChapter", (req, res) => {
         });
 })
 
+router.get("/searchChapter/:komik_id", (req, res) => {
+    const { komik_id } = req.params;
+    Chapter.find({ komik_id })
+        .then(result => {
+            res.json({
+                status: 'SUCCESS',
+                message: 'Chapter found',
+                data: result,
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            res.json({
+                status: 'FAILED',
+                message: 'Chapter not found',
+            });
+        });
+})
+
 
 const storage = new Storage({
     projectId: 'mangadise-project',
