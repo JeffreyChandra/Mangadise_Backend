@@ -6,9 +6,9 @@ const mongoose = require('mongoose');
 const router = express.Router();
 
 router.post('/addComment', async (req, res) => {
-    const { user_id, komik_id, comment, username } = req.body;
+    const { user_id, komik_id, comment } = req.body;
 
-    if (!user_id || !komik_id || !comment || !username) {
+    if (!user_id || !komik_id || !comment) {
         return res.status(400).json({ status: 'FAILED', message: 'Fields cant be empty' });
     }
 
@@ -20,7 +20,6 @@ router.post('/addComment', async (req, res) => {
         user_id,
         komik_id,
         comment,
-        username,
     });
 
     await newComment.save()
@@ -93,23 +92,47 @@ router.put('/editComment/:_id', (req, res) => {
 router.get('/komikComment/:komik_id', async (req, res) => {
     const { komik_id } = req.params;
 
-    if (!komik_id) {
-        return res.status(400).json({ status: 'FAILED', message: 'Fields cant be empty' });
-    }
+    // if (!mongoose.Types.ObjectId.isValid(komik_id)) {
+    //     return res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' });
+    // }
 
-    db.Types.ObjectId.isValid(komik_id)
-        ? null
-        : res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' });
+    try {
+        const comments = await Comment.find({ komik_id }).populate('user_id', 'name');
 
-    Comment.find({ komik_id }).then(async (result) => {
+        // Get all unique user IDs from comments
+        const userIds = comments.map(comment => comment.user_id?._id).filter(id => id);
+        
+        // Fetch all users at once
+        const users = await User.find({ 
+            _id: { $in: userIds }
+        }).select('name');
+
+        // Create a map of user IDs to usernames for quick lookup
+        const userMap = {};
+        users.forEach(user => {
+            userMap[user._id] = user.name;
+        });
+
+        const formattedComments = comments.map(item => ({
+            komik_id: item.komik_id,
+            user_id: item.user_id?._id || null,
+            name: item.user_id?._id ? userMap[item.user_id._id] : null,
+            comment: item.comment,
+        }));
 
         res.json({
             status: 'SUCCESS',
-            message: 'Comment found',
-            data: result,
+            message: 'Comments found',
+            data: formattedComments,
         });
 
-    })
-
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            status: 'FAILED',
+            message: 'Server error while fetching comments',
+            error: err.message,
+        });
+    }
 });
 module.exports = router;
