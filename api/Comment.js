@@ -92,22 +92,16 @@ router.put('/editComment/:_id', (req, res) => {
 router.get('/komikComment/:komik_id', async (req, res) => {
     const { komik_id } = req.params;
 
-    // if (!mongoose.Types.ObjectId.isValid(komik_id)) {
-    //     return res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' });
-    // }
 
     try {
         const comments = await Comment.find({ komik_id }).populate('user_id', 'name');
 
-        // Get all unique user IDs from comments
         const userIds = comments.map(comment => comment.user_id?._id).filter(id => id);
         
-        // Fetch all users at once
         const users = await User.find({ 
             _id: { $in: userIds }
         }).select('name');
 
-        // Create a map of user IDs to usernames for quick lookup
         const userMap = {};
         users.forEach(user => {
             userMap[user._id] = user.name;
