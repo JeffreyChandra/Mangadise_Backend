@@ -103,17 +103,10 @@ router.get('/komikComment/:komik_id', async (req, res) => {
 
     Comment.find({ komik_id }).then(async (result) => {
 
-        const comments = await Promise.all(result.map(async (comment) => {
-            const user = await User.findById(comment.user_id);
-            return {
-                ...comment._doc,
-                username: user.username,
-            };
-        }));
         res.json({
             status: 'SUCCESS',
             message: 'Comment found',
-            data: comments,
+            data: result,
         });
 
     })
