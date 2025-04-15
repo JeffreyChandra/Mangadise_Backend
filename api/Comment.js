@@ -15,7 +15,7 @@ router.post('/addComment', async (req, res) => {
     db.Types.ObjectId.isValid(user_id) && db.Types.ObjectId.isValid(komik_id)
         ? null
         : res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' });
-
+ 
     const newComment = new Comment({
         user_id,
         komik_id,
@@ -112,6 +112,7 @@ router.get('/komikComment/:komik_id', async (req, res) => {
             user_id: item.user_id?._id || null,
             name: item.user_id?._id ? userMap[item.user_id._id] : null,
             comment: item.comment,
+            createdAt: item.createdAt,
         }));
 
         res.json({
