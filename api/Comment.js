@@ -112,7 +112,7 @@ router.get('/komikComment/:komik_id', async (req, res) => {
             user_id: item.user_id?._id || null,
             name: item.user_id?._id ? userMap[item.user_id._id] : null,
             comment: item.comment,
-            createdAt: item.createdAt,
+            createdAt: item.create_at,
         }));
 
         res.json({
