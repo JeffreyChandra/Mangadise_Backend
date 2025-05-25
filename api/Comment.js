@@ -3,6 +3,7 @@ const Comment = require('../models/Comment');
 const User = require('../models/User');
 const db = require('../config/db');
 const mongoose = require('mongoose');
+const Favorite = require('../models/Favorite');
 const router = express.Router();
 
 router.post('/addComment', async (req, res) => {
@@ -108,6 +109,7 @@ router.get('/komikComment/:komik_id', async (req, res) => {
         });
 
         const formattedComments = comments.map(item => ({
+            _id: item._id,
             komik_id: item.komik_id,
             user_id: item.user_id?._id || null,
             name: item.user_id?._id ? userMap[item.user_id._id] : null,
@@ -130,4 +132,34 @@ router.get('/komikComment/:komik_id', async (req, res) => {
         });
     }
 });
+
+router.delete('/deleteComment/:_id', (req, res) => {
+    const { _id } = req.params;
+
+    db.Types.ObjectId.isValid(_id)
+        ? null
+        : res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' });
+
+    Comment.findByIdAndDelete(_id)
+        .then(result => {
+            if (!result) {
+                return res.json({
+                    status: 'FAILED',
+                    message: 'Comment not found',
+                });
+            }
+            res.json({
+                status: 'SUCCESS',
+                message: 'Comment deleted',
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            res.json({
+                status: 'FAILED',
+                message: 'Failed to delete comment',
+            });
+        });
+});
+
 module.exports = router;
