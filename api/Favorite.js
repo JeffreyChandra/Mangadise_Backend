@@ -99,5 +99,37 @@ router.post("/addFavorite", async (req, res) => {
       });
   });
 
+  router.delete("/removeFavorite/:user_id/:komik_id", async (req, res) => {
+    const { user_id, komik_id } = req.params;
+
+    if (!user_id || !komik_id) {
+      return res.status(400).json({ status: "FAILED", message: "Missing fields" });
+    }
+
+    db.Types.ObjectId.isValid(user_id) && db.Types.ObjectId.isValid(komik_id)
+      ? null
+      : res.status(400).json({ status: 'FAILED', message: 'Invalid ID format' });
+
+    Favorite.findOneAndDelete({ user_id, komik_id })
+      .then(result => {
+        if (!result) {
+          return res.json({
+            status: 'FAILED',
+            message: 'Favorite not found',
+          });
+        }
+        res.json({
+          status: 'SUCCESS',
+          message: 'Favorite removed',
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        res.json({
+          status: 'FAILED',
+          message: 'Error removing favorite',
+        });
+      });
+  });
 
 module.exports = router;
