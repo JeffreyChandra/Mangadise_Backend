@@ -177,4 +177,58 @@ router.get("/getUser/:_id", (req, res) => {
     }
 }   )
 
+router.put('/updateUser/:_id', (req,res) => {
+    req.params._id = req.params._id.trim();
+    const { _id } = req.params;
+    const {nama} = req.body
+
+    if (_id == "") {
+        res.json({
+            status: 'FAILED',
+            message: 'Empty input fields!'
+        })
+    } else {
+        User.findOneAndUpdate({ _id }, { name: nama }, { new: true }).then(result => {
+            res.json({
+                status: 'SUCCESS',
+                message: 'User updated successfully',
+                data: result
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: 'FAILED',
+                message: 'An error occured while updating user'
+            })
+        })
+    }
+})
+
+router.put('/updateUserPoint/:_id', (req, res) => {
+    req.params._id = req.params._id.trim();
+    const { _id } = req.params;
+    const { point } = req.body;
+
+    if (_id == "" || point == "") {
+        res.json({
+            status: 'FAILED',
+            message: 'Empty input fields!'
+        })
+    } else {
+        User.findOneAndUpdate({ _id }, { point }, { new: true }).then(result => {
+            res.json({
+                status: 'SUCCESS',
+                message: 'User point updated successfully',
+                data: result
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: 'FAILED',
+                message: 'An error occured while updating user point'
+            })
+        })
+    }
+})
+
 module.exports = router;

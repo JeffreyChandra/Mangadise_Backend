@@ -52,6 +52,25 @@ router.get('/searchGenre/:genre', (req, res) => {
         });
 })
 
+router.get('/getGenre/:komik_id', (req, res) =>{
+    const {komik_id} = req.params;
+    Genre.find({ komik_id })
+        .then(result => {
+            res.json({
+                status: 'SUCCESS',
+                message: 'Genre found',
+                data: result,
+            })
+        })
+        .catch(err=> {
+            console.error(err);
+            res.json({
+                status: 'FAILED',
+                message: 'Genre not found',
+            });
+        })
+
+})
 
 
 
