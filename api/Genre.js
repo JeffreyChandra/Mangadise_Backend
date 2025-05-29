@@ -2,6 +2,7 @@ const express = require('express');
 const Genre = require('../models/Genre');
 const db = require('../config/db');
 const { route } = require('./Chapter');
+const Comic = require('../models/Comic');
 const router = express.Router();
 
 
@@ -52,26 +53,40 @@ router.get('/searchGenre/:genre', (req, res) => {
         });
 })
 
-router.get('/getGenre/:komik_id', (req, res) =>{
-    const {komik_id} = req.params;
-    Genre.find({ komik_id })
-        .then(result => {
-            res.json({
-                status: 'SUCCESS',
-                message: 'Genre found',
-                data: result,
-            })
-        })
-        .catch(err=> {
-            console.error(err);
-            res.json({
-                status: 'FAILED',
-                message: 'Genre not found',
-            });
-        })
+
+router.get('/getGenre/:genre', async (req, res) => {
+    const {genre} = req.params;
+
+    if (!genre) {
+        return res.status(400).json({ status: 'FAILED', message: 'Genre is required' });
+    }
+    if (genre === "") {
+        return res.status(400).json({ status: 'FAILED', message: 'Genre cannot be empty' });
+    }
+
+    const result = await Genre.find({ genre });
+    if (result.length === 0) {
+        return res.status(404).json({ status: 'FAILED', message: 'No comics found for this genre' });
+    }
+    if (result === null) {
+        return res.status(404).json({ status: 'FAILED', message: 'Genre not found' });
+    }
+
+    const data = await Promise.all(result.map(async (item) => {
+        const komik = await Comic.findById({ _id: item.komik_id });
+        return {
+            komik: komik.title,
+            cover: komik.cover,
+            rate: komik.rate,
+        };
+    }));
+    res.json({
+        status: 'SUCCESS',
+        message: 'Genre found',
+        data: data,
+    });
 
 })
-
 
 
 
