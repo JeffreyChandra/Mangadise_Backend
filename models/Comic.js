@@ -8,7 +8,7 @@ const komikSchema = new Schema({
     cover : String,
     synopsis : String,
     rate : Number,
-    totalChap : Number, 
+    totalChapter : Number, 
     create_at : {type : Date, default: Date.now},
 });
 

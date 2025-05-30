@@ -79,7 +79,7 @@ router.get('/getGenre/:genre', async (req, res) => {
             komik: komik.title,
             cover: komik.cover,
             rate: komik.rate,
-            totalChap: komik.totalChap,
+            totalChapter: komik.totalChapter,
             synopsis: komik.synopsis,
 
         };
