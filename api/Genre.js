@@ -75,9 +75,13 @@ router.get('/getGenre/:genre', async (req, res) => {
     const data = await Promise.all(result.map(async (item) => {
         const komik = await Comic.findById({ _id: item.komik_id });
         return {
+            komik_id: item.komik_id,
             komik: komik.title,
             cover: komik.cover,
             rate: komik.rate,
+            totalChap: komik.totalChap,
+            synopsis: komik.synopsis,
+
         };
     }));
     res.json({
