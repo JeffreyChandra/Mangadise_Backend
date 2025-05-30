@@ -92,6 +92,25 @@ router.get('/getGenre/:genre', async (req, res) => {
 
 })
 
+router.get('/getGenreKomik/:komik_id', async (req, res) => {
+    const { komik_id } = req.params;
+
+    if (!komik_id) {
+        return res.status(400).json({ status: 'FAILED', message: 'Komik ID is required' });
+    }
+
+    const result = await Genre.find({ komik_id });
+    if (result.length === 0) {
+        return res.status(404).json({ status: 'FAILED', message: 'No genres found for this komik ID' });
+    }
+
+    res.json({
+        status: 'SUCCESS',
+        message: 'Genres found',
+        data: result,
+    });
+}   );
+
 
 
 module.exports = router;
